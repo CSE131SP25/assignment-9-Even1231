@@ -14,6 +14,8 @@ public class Food {
 	 */
 	public Food() {
 		//FIXME
+		 this.x = Math.random();
+	     this.y = Math.random();
 	}
 	
 	/**
@@ -21,6 +23,15 @@ public class Food {
 	 */
 	public void draw() {
 		//FIXME
+		 StdDraw.setPenColor(Color.RED); 
+	     StdDraw.filledCircle(x, y, FOOD_SIZE / 2);
+	}
+	public double getX() {
+		return this.x;
+	}
+	
+	public double getY() {
+		return this.y;
 	}
 	
 }

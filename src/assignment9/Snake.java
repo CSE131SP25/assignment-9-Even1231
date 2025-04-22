@@ -9,11 +9,14 @@ public class Snake {
 	private LinkedList<BodySegment> segments;
 	private double deltaX;
 	private double deltaY;
+	private boolean shouldGrow = false;
 	
 	public Snake() {
 		//FIXME - set up the segments instance variable
 		deltaX = 0;
 		deltaY = 0;
+		segments = new LinkedList<>();
+	    segments.add(new BodySegment(0.5, 0.5, SEGMENT_SIZE)); 
 	}
 	
 	public void changeDirection(int direction) {
@@ -38,6 +41,22 @@ public class Snake {
 	 */
 	public void move() {
 		//FIXME
+		 BodySegment head = segments.getFirst();
+		 double newX = head.getX() + deltaX;
+		 double newY = head.getY() + deltaY;
+
+		 
+		 BodySegment newHead = new BodySegment(newX, newY, SEGMENT_SIZE);
+		 segments.addFirst(newHead);
+
+		 if (!shouldGrow) {
+		       
+		        segments.removeLast();
+		    } else {
+		        
+		        shouldGrow = false; 
+		    }
+		 
 	}
 	
 	/**
@@ -45,6 +64,9 @@ public class Snake {
 	 */
 	public void draw() {
 		//FIXME
+		for (BodySegment seg : segments) {
+	        seg.draw();
+	    }
 	}
 	
 	/**
@@ -54,7 +76,16 @@ public class Snake {
 	 */
 	public boolean eatFood(Food f) {
 		//FIXME
-		return false;
+		 BodySegment head = segments.getFirst();
+		 double dx = head.getX() - f.getX();
+		 double dy = head.getY() - f.getY();
+		 double distance = Math.sqrt(dx * dx + dy * dy);
+
+		 if (distance < SEGMENT_SIZE / 2 + Food.FOOD_SIZE / 2) {
+		     shouldGrow = true;
+		     return true;
+		 }
+		 return false;
 	}
 	
 	/**
@@ -63,6 +94,30 @@ public class Snake {
 	 */
 	public boolean isInbounds() {
 		//FIXME
-		return true;
+		BodySegment head = segments.getFirst();
+	    double x = head.getX();
+	    double y = head.getY();
+
+	    return x >= 0 && x <= 1 && y >= 0 && y <= 1;
 	}
+	
+	public boolean isSelfCollided() {
+	    BodySegment head = segments.getFirst();
+	    double headX = head.getX();
+	    double headY = head.getY();
+
+	    
+	    for (int i = 1; i < segments.size(); i++) {
+	        BodySegment seg = segments.get(i);
+	        double dx = headX - seg.getX();
+	        double dy = headY - seg.getY();
+	        double distance = Math.sqrt(dx * dx + dy * dy);
+
+	        if (distance < SEGMENT_SIZE / 2) {
+	            return true; 
+	        }
+	    }
+	    return false;
+	}
+
 }
